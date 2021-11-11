@@ -33,10 +33,12 @@ namespace PunLoadTest.CompatibilityControl
 
         private static void SwitchToPUN1()
         {
+            Debug.Log(">>SwitchToPUN1");
             // var scriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(Application.platform);
 
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, 
-                                                                PUN1_SCRIPTING_DEFINE_SYMBOLS);
+            ScriptingDefineEditor defineEditor = new ScriptingDefineEditor(EditorUserBuildSettings.selectedBuildTargetGroup);
+            defineEditor.Add(PUN1_SCRIPTING_DEFINE_SYMBOLS);
+
             DetectedPUNVersion = PUNVersion.PUN1;
         }
 
