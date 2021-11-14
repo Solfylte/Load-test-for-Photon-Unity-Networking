@@ -9,28 +9,32 @@ using Photon.Realtime;
 
 namespace PunLoadTest
 {
-    public static class PhotonNetworkProxy
+    public static class PhotonNetworkFacade
     {
 #if IS_PUN1
         public static int SendRate { get => PhotonNetwork.sendRate; set => PhotonNetwork.sendRate = value; }
         public static int SerializationRate { get => PhotonNetwork.sendRateOnSerialize; set => PhotonNetwork.sendRateOnSerialize = value; }
-        public static bool IsMine(PhotonView photonView) => photonView.isMine;
         public static bool InLobby => PhotonNetwork.insideLobby;
         public static int CountOfRooms => PhotonNetwork.countOfRooms;
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings("1.0.0");
-
         public static float TotalIncomingBytes => PhotonNetwork.networkingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static float TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
 #elif IS_PUN2
         public static int SendRate { get => PhotonNetwork.SendRate; set => PhotonNetwork.SendRate = value; }
         public static int SerializationRate { get => PhotonNetwork.SerializationRate; set => PhotonNetwork.SerializationRate = value; }
-        public static bool IsMine(PhotonView photonView) => photonView.IsMine;
         public static bool InLobby => PhotonNetwork.InLobby;
         public static int CountOfRooms => PhotonNetwork.CountOfRooms;
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings();
-
         public static float TotalIncomingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static float TotalOutgoingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing.TotalPacketBytes;
+#else  
+        public static int SendRate { get => 20; set => Debug.LogError("Not available. PUN not found."); }
+        public static int SerializationRate { get => 10; set => Debug.LogError("Not available. PUN not found."); }
+        public static bool InLobby => false;
+        public static int CountOfRooms => 0;
+        public static void ConnectUsingSettings() => Debug.LogError("Not available. PUN not found.");
+        public static float TotalIncomingBytes => 0;
+        public static float TotalOutgoingBytes => 0;
 #endif
     }
 }

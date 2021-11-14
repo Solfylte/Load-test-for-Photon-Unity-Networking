@@ -20,11 +20,11 @@ namespace PunLoadTest.UI
             if (Time.unscaledTime > sampleTime)
             {
                 sampleTime = Time.unscaledTime + 1f;
-                incomingBandwidth = PhotonNetworkProxy.TotalIncomingBytes - lastInTotalPacketBytes;
-                outgoingBandwidth = PhotonNetworkProxy.TotalOutgoingBytes - lastOutTotalPacketBytes;
+                incomingBandwidth = PhotonNetworkFacade.TotalIncomingBytes - lastInTotalPacketBytes;
+                outgoingBandwidth = PhotonNetworkFacade.TotalOutgoingBytes - lastOutTotalPacketBytes;
                 
-                lastInTotalPacketBytes = PhotonNetworkProxy.TotalIncomingBytes;
-                lastOutTotalPacketBytes = PhotonNetworkProxy.TotalOutgoingBytes;
+                lastInTotalPacketBytes = PhotonNetworkFacade.TotalIncomingBytes;
+                lastOutTotalPacketBytes = PhotonNetworkFacade.TotalOutgoingBytes;
             }
         }
     }

@@ -36,8 +36,8 @@ namespace PunLoadTest
 
         private void SetupPhotonNetwork()
         {
-            PhotonNetworkProxy.SendRate = sendRate;
-            PhotonNetworkProxy.SerializationRate = serializationRate;
+            PhotonNetworkFacade.SendRate = sendRate;
+            PhotonNetworkFacade.SerializationRate = serializationRate;
         }
 
         void Start()
@@ -45,14 +45,14 @@ namespace PunLoadTest
             Debug.Log("> Connecting to Photon...");
 
             // PhotonNetwork.playerName = "Player " + UnityEngine.Random.Range(1000, 10000);
-            PhotonNetworkProxy.ConnectUsingSettings();
+            PhotonNetworkFacade.ConnectUsingSettings();
         }
 
         public override void OnConnectedToMaster()
         {
             Debug.Log("> Connected.");
 
-            if (!PhotonNetworkProxy.InLobby)
+            if (!PhotonNetworkFacade.InLobby)
             {
                 Debug.Log("> Joining to lobby...");
                 PhotonNetwork.JoinLobby();
@@ -71,7 +71,7 @@ namespace PunLoadTest
                 CreateRoom();
         }
 
-        private bool RoomHasBeenCreated() => PhotonNetworkProxy.CountOfRooms > 0;
+        private bool RoomHasBeenCreated() => PhotonNetworkFacade.CountOfRooms > 0;
 
         private void JoinRoom()
         {
