@@ -19,8 +19,8 @@ namespace PunLoadTest
         public static int CountOfRooms => PhotonNetwork.countOfRooms;
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings("1.0.0");
 
-        public static TrafficStats TrafficStatsIncoming => PhotonNetwork.networkingPeer.TrafficStatsIncoming;
-        public static TrafficStats TrafficStatsOutgoing => PhotonNetwork.networkingPeer.TrafficStatsOutgoing;
+        public static float TotalIncomingBytes => PhotonNetwork.networkingPeer.TrafficStatsIncoming.TotalPacketBytes;
+        public static float TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
 #elif IS_PUN2
         public static int SendRate { get => PhotonNetwork.SendRate; set => PhotonNetwork.SendRate = value; }
         public static int SerializationRate { get => PhotonNetwork.SerializationRate; set => PhotonNetwork.SerializationRate = value; }
@@ -29,8 +29,8 @@ namespace PunLoadTest
         public static int CountOfRooms => PhotonNetwork.CountOfRooms;
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings();
 
-        public static TrafficStats TrafficStatsIncoming => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming;
-        public static TrafficStats TrafficStatsOutgoing => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing;
+        public static float TotalIncomingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.TotalPacketBytes;
+        public static float TotalOutgoingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing.TotalPacketBytes;
 #endif
     }
 }

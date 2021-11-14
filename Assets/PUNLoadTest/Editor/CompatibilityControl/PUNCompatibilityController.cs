@@ -12,6 +12,8 @@ namespace PunLoadTest.CompatibilityControl
     [InitializeOnLoad]
     public class PUNCompatibilityController
     {
+
+
         private const string PUN1_SCRIPTING_DEFINE_SYMBOLS = "IS_PUN1";
         private const string PUN2_SCRIPTING_DEFINE_SYMBOLS = "IS_PUN2";
 
@@ -22,8 +24,8 @@ namespace PunLoadTest.CompatibilityControl
 
         static PUNCompatibilityController()
         {
-            bool isPUN1 = IsTypeExist(pun1TypeName);
-            bool isPUN2 = IsTypeExist(pun2TypeName);
+            bool isPUN1 = TypeChecker.IsTypeExist(pun1TypeName);
+            bool isPUN2 = TypeChecker.IsTypeExist(pun2TypeName);
 
             if (isPUN1)
                 SwitchToPUN1();
@@ -33,9 +35,6 @@ namespace PunLoadTest.CompatibilityControl
 
         private static void SwitchToPUN1()
         {
-            Debug.Log(">>SwitchToPUN1");
-            // var scriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(Application.platform);
-
             ScriptingDefineEditor defineEditor = new ScriptingDefineEditor(EditorUserBuildSettings.selectedBuildTargetGroup);
             defineEditor.Add(PUN1_SCRIPTING_DEFINE_SYMBOLS);
 
@@ -44,19 +43,10 @@ namespace PunLoadTest.CompatibilityControl
 
         private static void SwitchToPUN2()
         {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, 
-                                                                PUN1_SCRIPTING_DEFINE_SYMBOLS);
-            DetectedPUNVersion = PUNVersion.PUN1;
-        }
+            ScriptingDefineEditor defineEditor = new ScriptingDefineEditor(EditorUserBuildSettings.selectedBuildTargetGroup);
+            defineEditor.Add(PUN2_SCRIPTING_DEFINE_SYMBOLS);
 
-        private static bool IsTypeExist(string fullTypeName)
-        {
-            var type = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                        from myType in assembly.GetTypes()
-                        where myType.FullName == fullTypeName
-                        select myType).FirstOrDefault();
-
-            return type != null;
+            DetectedPUNVersion = PUNVersion.PUN2;
         }
     }
 }
