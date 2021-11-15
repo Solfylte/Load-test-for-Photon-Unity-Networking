@@ -37,7 +37,7 @@ namespace PunLoadTest.CompatibilityControl
                 defineSymbols = GetDefineSymbols();
             }
             else
-                Debug.LogWarning($"Define '{defineSymbol}' already exist for '{buildTargetGroup}' target group.");
+                Debug.Log($"Define '{defineSymbol}' already exist for '{buildTargetGroup}' target group.");
         }
 
         public void Remove(string defineSymbol)
@@ -54,7 +54,7 @@ namespace PunLoadTest.CompatibilityControl
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, defineSymbolsLine);
             }
             else
-                Debug.LogError($"Unable to remove define '{defineSymbol}', " +
+                Debug.LogWarning($"Unable to remove define '{defineSymbol}', " +
                                 $"since '{buildTargetGroup}' target group don't contain it.");
         }
 

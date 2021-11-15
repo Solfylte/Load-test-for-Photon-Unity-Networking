@@ -12,41 +12,52 @@ namespace PunLoadTest.CompatibilityControl
     [InitializeOnLoad]
     public class PUNCompatibilityController
     {
-
-
-        private const string PUN1_SCRIPTING_DEFINE_SYMBOLS = "IS_PUN1";
-        private const string PUN2_SCRIPTING_DEFINE_SYMBOLS = "IS_PUN2";
-
-        static string pun1TypeName = "Photon.MonoBehaviour";
-        static string pun2TypeName = "Photon.Pun.MonoBehaviourPun";
+        private static Dictionary<PUNVersion, (string defineName, string typeName)> punVersions = new Dictionary<PUNVersion, (string, string)>() 
+        { 
+            { PUNVersion.PUN1, ("IS_PUN1", "Photon.MonoBehaviour")},
+            { PUNVersion.PUN2, ("IS_PUN2", "Photon.Pun.MonoBehaviourPun")},
+        };
 
         public static PUNVersion DetectedPUNVersion { get; private set; }
 
         static PUNCompatibilityController()
         {
-            bool isPUN1 = TypeChecker.IsTypeExist(pun1TypeName);
-            bool isPUN2 = TypeChecker.IsTypeExist(pun2TypeName);
-
-            if (isPUN1)
-                SwitchToPUN1();
-            else if(isPUN2)
-                SwitchToPUN2();
+            UpdatePUNVersion();
+            Application.logMessageReceived += Application_logMessageReceived;
         }
 
-        private static void SwitchToPUN1()
+        private static void Application_logMessageReceived(string condition, string stackTrace, LogType type)
         {
-            ScriptingDefineEditor defineEditor = new ScriptingDefineEditor(EditorUserBuildSettings.selectedBuildTargetGroup);
-            defineEditor.Add(PUN1_SCRIPTING_DEFINE_SYMBOLS);
-
-            DetectedPUNVersion = PUNVersion.PUN1;
+            if (type == LogType.Error && condition.Contains("CS1022"))
+                UpdatePUNVersion();
         }
 
-        private static void SwitchToPUN2()
+        private static void UpdatePUNVersion()
+        {
+            if (CheckVersion(PUNVersion.PUN1))
+                SwitchToPUN(PUNVersion.PUN1);
+            else if (CheckVersion(PUNVersion.PUN2))
+                SwitchToPUN(PUNVersion.PUN2);
+            else
+                SwitchToNone();
+        }
+
+        private static bool CheckVersion(PUNVersion punVersion) => TypeChecker.IsTypeExist(punVersions[punVersion].typeName);
+
+        private static void SwitchToNone()
+        {
+            DetectedPUNVersion = PUNVersion.NONE;
+            ScriptingDefineEditor defineEditor = new ScriptingDefineEditor(EditorUserBuildSettings.selectedBuildTargetGroup);
+            defineEditor.Remove(punVersions[PUNVersion.PUN1].defineName);
+            defineEditor.Remove(punVersions[PUNVersion.PUN2].defineName);
+        }
+
+        private static void SwitchToPUN(PUNVersion punVersion)
         {
             ScriptingDefineEditor defineEditor = new ScriptingDefineEditor(EditorUserBuildSettings.selectedBuildTargetGroup);
-            defineEditor.Add(PUN2_SCRIPTING_DEFINE_SYMBOLS);
+            defineEditor.Add(punVersions[punVersion].defineName);
 
-            DetectedPUNVersion = PUNVersion.PUN2;
+            DetectedPUNVersion = punVersion;
         }
     }
 }

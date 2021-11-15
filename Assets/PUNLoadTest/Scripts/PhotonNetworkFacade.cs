@@ -27,14 +27,6 @@ namespace PunLoadTest
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings();
         public static float TotalIncomingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static float TotalOutgoingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing.TotalPacketBytes;
-#else  
-        public static int SendRate { get => 20; set => Debug.LogError("Not available. PUN not found."); }
-        public static int SerializationRate { get => 10; set => Debug.LogError("Not available. PUN not found."); }
-        public static bool InLobby => false;
-        public static int CountOfRooms => 0;
-        public static void ConnectUsingSettings() => Debug.LogError("Not available. PUN not found.");
-        public static float TotalIncomingBytes => 0;
-        public static float TotalOutgoingBytes => 0;
 #endif
     }
 }

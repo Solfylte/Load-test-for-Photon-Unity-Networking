@@ -1,10 +1,11 @@
 using ExitGames.Client.Photon;
 using System;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace PunLoadTest.UI
 {
-    public class ShortStatsGUI : MonoBehaviour
+    public class ExtendedStatsGUI : MonoBehaviour
     {
         private Rect statsRect = new Rect(10, 100, 200, 50);
         private int WindowId = 101;
@@ -74,24 +75,41 @@ namespace PunLoadTest.UI
                 PhotonNetwork.networkingPeer.TrafficStatsEnabled = isStatsOn;
 
             if (isStatsWindowOn)
-                statsRect = GUILayout.Window(WindowId, this.statsRect, ShortStatsWindow, "Short stats");
+                statsRect = GUILayout.Window(WindowId, this.statsRect, ExtendedStatsWindow, "Extended PUN stats");
         }
 
-        private void ShortStatsWindow(int windowID)
+        private void ExtendedStatsWindow(int windowID)
         {
-            AddCompositeLabel("Time: ", GetCurrentTime());
+            AddCompositeLabel("Time: ", Timer.FormatedTime);
 
+            DrawPerformanceGUI();
+            DrawBandwidthGUI();
+            DrawMemoryGUI();
+
+            GUI.DragWindow();
+        }
+
+        private void DrawPerformanceGUI()
+        {
             if (isShowFps)
                 AddCompositeLabel("FPS: ", fpsCounter.Average.ToString());
+        }
 
+        private void DrawBandwidthGUI()
+        {
             GUILayout.Box("Bandwidth");
             if (isShowTraffic)
             {
-                AddCompositeLabel("In: ", trafficCounter.IncomingBandwidth.ToString("0.00"), " kBytes/sec");
-                AddCompositeLabel("Out: ", trafficCounter.OutgoingBandwidth.ToString("0.00"), " kBytes/sec");
+                AddCompositeLabel("In:\t", trafficCounter.IncomingBandwidth.ToString("0.00"), " kBytes/sec");
+                AddCompositeLabel("Out:\t", trafficCounter.OutgoingBandwidth.ToString("0.00"), " kBytes/sec");
             }
+        }
 
-            GUI.DragWindow();
+        private void DrawMemoryGUI()
+        {
+            GUILayout.Box("Memory");
+            AddCompositeLabel("Total reserved:\t", (Profiler.GetTotalReservedMemoryLong() / 1048576f).ToString("0.0"), " MB");
+            AddCompositeLabel("Mono used:\t", (Profiler.GetMonoUsedSizeLong() / 1048576f).ToString("0.0"), " MB");
         }
 
         private void AddCompositeLabel(string prefix, string value, string sufix = "")
@@ -105,13 +123,6 @@ namespace PunLoadTest.UI
             if (sufix != "")
                 GUILayout.Label(sufix, labelStyle);
             GUILayout.EndHorizontal();
-        }
-
-        private string GetCurrentTime()
-        {
-            int minutes = ((int)Time.realtimeSinceStartup) / 60;
-            int seconds = ((int)Time.realtimeSinceStartup) % 60;
-            return string.Format("{0:D2}:{1:D2}", minutes, seconds);
         }
     }
 }
