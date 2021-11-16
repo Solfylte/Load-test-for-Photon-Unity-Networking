@@ -1,10 +1,16 @@
 using System;
+using UnityEngine;
 
 namespace PunLoadTest
 {
     public interface IPUNConnection
     {
         event Action OnJoined;
+    }
+
+    public interface IMovementController
+    {
+        event Action<Transform> OnArrivedToDestination;
     }
 
     namespace UI

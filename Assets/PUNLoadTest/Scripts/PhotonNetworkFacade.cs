@@ -12,6 +12,7 @@ namespace PunLoadTest
     public static class PhotonNetworkFacade
     {
 #if IS_PUN1
+        public static bool IsMine(PhotonView photonView) => photonView.isMine;
         public static int SendRate { get => PhotonNetwork.sendRate; set => PhotonNetwork.sendRate = value; }
         public static int SerializationRate { get => PhotonNetwork.sendRateOnSerialize; set => PhotonNetwork.sendRateOnSerialize = value; }
         public static bool InLobby => PhotonNetwork.insideLobby;
@@ -20,6 +21,7 @@ namespace PunLoadTest
         public static float TotalIncomingBytes => PhotonNetwork.networkingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static float TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
 #elif IS_PUN2
+        public static bool IsMine(PhotonView photonView) => photonView.IsMine;
         public static int SendRate { get => PhotonNetwork.SendRate; set => PhotonNetwork.SendRate = value; }
         public static int SerializationRate { get => PhotonNetwork.SerializationRate; set => PhotonNetwork.SerializationRate = value; }
         public static bool InLobby => PhotonNetwork.InLobby;
