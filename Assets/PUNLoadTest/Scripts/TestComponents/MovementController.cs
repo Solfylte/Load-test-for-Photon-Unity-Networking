@@ -9,11 +9,11 @@ namespace PunLoadTest
     [RequireComponent(typeof(PhotonView))]
     public class MovementController : MonoBehaviour
     {
-        event Action<Transform> OnArrivedToDestination;
+        event Action<PhotonView> OnArrivedToDestination;
 
         private const float DESTINATION_TRESHOLD = 0.2f;
 
-        [SerializeField] private float maxMoveDistance = 20f;
+        [SerializeField] private float maxMoveDistance = 50f;
         [SerializeField] private float speed = 2f;
 
         private Vector3 startPosition;
@@ -39,7 +39,7 @@ namespace PunLoadTest
         {
             if (IsArrived())
             {
-                OnArrivedToDestination?.Invoke(transform);
+                OnArrivedToDestination?.Invoke(photonView);
                 SetToStartPoint();
             }
             else

@@ -12,4 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c684e53acd24af646bd2f09fdd553a65, type: 3}
   m_Name: LoadTestConfiguration
   m_EditorClassIdentifier: 
-  testObjectPrefab: {fileID: 2538817844778256693, guid: 92e109bee1a11364f8e27ccf3cbef978, type: 3}
+  testObjectPUN1Prefab: {fileID: 0}
+  testObjectPUN2Prefab: {fileID: 2538817844778256693, guid: 92e109bee1a11364f8e27ccf3cbef978, type: 3}
+  spawnStep: 1
+  spawnWidht: 10
+  spawnDelay: 0.5
+  firstSpawnPoint: {x: 0, y: 0, z: -20}

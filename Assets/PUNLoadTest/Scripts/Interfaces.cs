@@ -10,7 +10,12 @@ namespace PunLoadTest
 
     public interface IMovementController
     {
-        event Action<Transform> OnArrivedToDestination;
+        event Action<PhotonView> OnArrivedToDestination;
+    }
+
+    public interface ISpawner
+    {
+        void SpawnObjects(int count, bool isAlwaysInstantiatingNewObjects = false);
     }
 
     namespace UI
