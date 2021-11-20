@@ -22,7 +22,6 @@ namespace PunLoadTest
         {
             photonView = GetComponent<PhotonView>();
             startPosition = transform.position;
-            speed = UnityEngine.Random.Range(speed * 0.5f, speed * 1.5f);
         }
 
         private void Update()
