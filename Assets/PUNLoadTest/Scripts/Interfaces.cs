@@ -15,7 +15,7 @@ namespace PunLoadTest
 
     public interface ISpawner
     {
-        void SpawnObjects(int count, bool isAlwaysInstantiatingNewObjects = false);
+        void SpawnObjects();
     }
 
     namespace UI

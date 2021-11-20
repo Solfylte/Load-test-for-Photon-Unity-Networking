@@ -8,12 +8,10 @@ namespace PunLoadTest
     public class Spawner : MonoBehaviour, ISpawner
     {
         private LoadTestConfiguration configuration;
-        private PhotonView photonView;
 
-        private WaitForSeconds spawnWaitForSeconds;
-        private int objectsCount = 400;
-        private int spawnIndex;
-        private bool isAlwaysInstantiatingNewObjects;
+        private WaitForSeconds spawnTimeout;
+        private int objectsCount;
+        private bool isLoopInstantiating;
         private Transform spawnPool;
 
         private void Awake()
@@ -25,8 +23,7 @@ namespace PunLoadTest
         private void InitializeComponents()
         {
             configuration = LoadTestConfiguration.Instance;
-            spawnWaitForSeconds = new WaitForSeconds(configuration.SpawnDelay);
-            photonView = GetComponent<PhotonView>();
+            spawnTimeout = new WaitForSeconds(configuration.SpawnDelay);
         }
 
         private void CreateSpawnPool()
@@ -34,33 +31,57 @@ namespace PunLoadTest
             spawnPool = new GameObject("SpawnPool").transform;
         }
 
-        public void SpawnObjects(int count, bool isAlwaysInstantiatingNewObjects = false)
+        public void SpawnObjects()
         {
-            this.objectsCount = count;
-            this.isAlwaysInstantiatingNewObjects = isAlwaysInstantiatingNewObjects;
+            objectsCount = configuration.ObjectsCount;
+            isLoopInstantiating = configuration.IsLoopInstantiating;
+
             StartCoroutine(SpawnObjectsDelayed());
         }
 
         private IEnumerator SpawnObjectsDelayed()
         {
+            Vector3 position = Vector3.zero;
+            int offsetX = 1;
+            int offsetZ = 0;
+            int spiraleStep = 0;
+            int countInLine = 1;
+            int x = 0, z  = 0;
+
             for (int i = 0; i < objectsCount; i++)
             {
-                SpawnObject();
-                yield return spawnWaitForSeconds;
+                position.x = x * configuration.SpawnStep;
+                position.z = z * configuration.SpawnStep;
+
+                SpawnObject(position);
+                yield return spawnTimeout;
+
+                countInLine--;
+                if (countInLine == 0)
+                {
+                    spiraleStep++;
+                    countInLine = spiraleStep;
+                    int bufer = offsetX;
+                    offsetX = -offsetZ;
+                    offsetZ = bufer;
+                }
+
+                x += offsetX;
+                z += offsetZ;
             }
         }
 
-        public void SpawnObject()
+        public void SpawnObject(Vector3 position)
         {
             GameObject testObject = PhotonNetwork.InstantiateSceneObject(configuration.TestObjectName,
-                                                                         GetSpawnObjectPosition(),
+                                                                         position,
                                                                          Quaternion.identity,
                                                                          0,
                                                                          null);
 
             testObject.transform.SetParent(spawnPool);
 
-            if(isAlwaysInstantiatingNewObjects)
+            if(isLoopInstantiating)
             {
                 IMovementController movementController = testObject.GetComponent<IMovementController>();
                 movementController.OnArrivedToDestination += MovementController_OnArrivedToDestination;
@@ -70,21 +91,7 @@ namespace PunLoadTest
         private void MovementController_OnArrivedToDestination(PhotonView testObjectPhotonView)
         {
             PhotonNetwork.Destroy(testObjectPhotonView);
-            SpawnObject();            
-        }
-
-        private Vector3 GetSpawnObjectPosition()
-        {
-            Vector3 spawnPosition = configuration.FirstSpawnPoint;
-            int spawnSide = spawnIndex % 2 == 0 ? 1 : -1;
-            spawnPosition.x += configuration.SpawnStep * spawnIndex * spawnSide;
-
-            if (spawnIndex >= configuration.SpawnWidht)
-                spawnIndex = 0;
-            else
-                spawnIndex++;
-
-            return spawnPosition;
+            SpawnObject(testObjectPhotonView.transform.position);            
         }
     }
 }

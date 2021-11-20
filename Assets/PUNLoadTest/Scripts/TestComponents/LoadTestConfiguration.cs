@@ -27,19 +27,17 @@ public class LoadTestConfiguration : ScriptableObject
 #endif
 
     public float SpawnStep => spawnStep;
-    public int SpawnWidht => spawnWidht;
     public float SpawnDelay => spawnDelay;
-
-    public Vector3 FirstSpawnPoint => firstSpawnPoint;
+    public int ObjectsCount { get => objectsCount; set => objectsCount = value; }
+    public bool IsLoopInstantiating { get => isLoopInstantiating; set => isLoopInstantiating = value; }
 
     [Header("Prefabs")]
     [SerializeField] private GameObject testObjectPUN1Prefab;
     [SerializeField] private GameObject testObjectPUN2Prefab;
     [Header("Test values")]
     [SerializeField] private float spawnStep = 1f;
-    [SerializeField] private int spawnWidht = 10;
     [SerializeField] private float spawnDelay = 0.5f;
-
-    [SerializeField] private Vector3 firstSpawnPoint = new Vector3(0, 0, -20f);
+    [SerializeField] private int objectsCount = 400;
+    [SerializeField] private bool isLoopInstantiating = false;
 
 }

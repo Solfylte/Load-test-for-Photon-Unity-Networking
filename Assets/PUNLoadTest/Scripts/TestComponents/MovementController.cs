@@ -7,26 +7,22 @@ namespace PunLoadTest
     /// Linear looped moving
     /// </summary>
     [RequireComponent(typeof(PhotonView))]
-    public class MovementController : MonoBehaviour
+    public class MovementController : MonoBehaviour, IMovementController
     {
-        event Action<PhotonView> OnArrivedToDestination;
-
-        private const float DESTINATION_TRESHOLD = 0.2f;
+        public event Action<PhotonView> OnArrivedToDestination;
 
         [SerializeField] private float maxMoveDistance = 50f;
         [SerializeField] private float speed = 2f;
 
         private Vector3 startPosition;
-        private Vector3 destination;
 
         private PhotonView photonView;
 
         private void Awake()
         {
             photonView = GetComponent<PhotonView>();
-
             startPosition = transform.position;
-            destination = startPosition + transform.forward * maxMoveDistance; 
+            speed = UnityEngine.Random.Range(speed * 0.5f, speed * 1.5f);
         }
 
         private void Update()
@@ -39,17 +35,17 @@ namespace PunLoadTest
         {
             if (IsArrived())
             {
-                OnArrivedToDestination?.Invoke(photonView);
                 SetToStartPoint();
+                OnArrivedToDestination?.Invoke(photonView);
             }
             else
-                MoveForward();
+                MoveUp();
         }
 
-        private void MoveForward() => transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+        private void MoveUp() => transform.position += transform.up * speed * Time.deltaTime;
 
         private void SetToStartPoint() => transform.position = startPosition;
 
-        private bool IsArrived() => Vector3.Distance(transform.position, destination) < DESTINATION_TRESHOLD;
+        private bool IsArrived() => transform.position.y - startPosition.y > maxMoveDistance;
     }
 }

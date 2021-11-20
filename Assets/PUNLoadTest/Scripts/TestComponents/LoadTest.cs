@@ -20,7 +20,7 @@ namespace PunLoadTest
         {
             configuration = LoadTestConfiguration.Instance;
             photonView = GetComponent<PhotonView>();
-            spawner = GetComponent<Spawner>();
+            spawner = GetComponent<ISpawner>();
         }
 
         IEnumerator Start()
@@ -36,7 +36,7 @@ namespace PunLoadTest
         [PunRPC]
         public void RunTest()
         {
-            spawner.SpawnObjects(400);
+            spawner.SpawnObjects();
         }
     }
 }
