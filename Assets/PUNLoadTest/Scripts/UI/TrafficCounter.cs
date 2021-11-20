@@ -5,8 +5,8 @@ namespace PunLoadTest.UI
 {
     public class TrafficCounter : MonoBehaviour, ITrafficCounter
     {
-        public float IncomingBandwidth => incomingBandwidth *0.001f;
-        public float OutgoingBandwidth => outgoingBandwidth * 0.001f;
+        public float IncomingBandwidth => incomingBandwidth * 0.008f;
+        public float OutgoingBandwidth => outgoingBandwidth * 0.008f;
 
         private float incomingBandwidth;
         private float outgoingBandwidth;

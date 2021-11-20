@@ -16,5 +16,5 @@ MonoBehaviour:
   testObjectPUN2Prefab: {fileID: 2538817844778256693, guid: be04914e2907ede4e89b1d9745dcda48, type: 3}
   spawnStep: 1.5
   spawnDelay: 0.1
-  objectsCount: 400
-  isLoopInstantiating: 0
+  minCount: 1
+  maxCount: 100

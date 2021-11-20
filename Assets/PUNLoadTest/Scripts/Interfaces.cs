@@ -8,14 +8,22 @@ namespace PunLoadTest
         event Action OnJoined;
     }
 
-    public interface IMovementController
+    public interface ILoadTest
     {
-        event Action<PhotonView> OnArrivedToDestination;
+        bool IsRun { get; }
+        void Run(float testTime, int count, bool isLoopInstantiating, bool isRPCSync);
+        void Interrupt();
     }
 
     public interface ISpawner
     {
-        void SpawnObjects();
+        void SpawnObjects(int count, bool isLoopInstantiating, bool isRPCSync);
+        void DestroyAll();
+    }
+
+    public interface IMovementController
+    {
+        event Action<PhotonView> OnArrivedToDestination;
     }
 
     namespace UI

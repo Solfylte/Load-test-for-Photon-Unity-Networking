@@ -22,6 +22,7 @@ namespace PunLoadTest
         public static bool InRoom => PhotonNetwork.inRoom;
         public static bool IsMasterClient => PhotonNetwork.isMasterClient;
         public static int CountOfRooms => PhotonNetwork.countOfRooms;
+        public static int PlayersInRoom => PhotonNetwork.room.PlayerCount;
         public static float TotalIncomingBytes => PhotonNetwork.networkingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static float TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
 
@@ -30,6 +31,7 @@ namespace PunLoadTest
                                string methodName,
                                PunLoadTest.RpcTarget targets,
                                params object[] param) => photonView.RPC(methodName, (PhotonTargets)targets, param);
+
 #elif IS_PUN2
         public static bool IsMine(PhotonView photonView) => photonView.IsMine;
         public static int SendRate { get => PhotonNetwork.SendRate; set => PhotonNetwork.SendRate = value; }
@@ -38,6 +40,7 @@ namespace PunLoadTest
         public static bool InRoom => PhotonNetwork.InRoom;
         public static bool IsMasterClient => PhotonNetwork.IsMasterClient;
         public static int CountOfRooms => PhotonNetwork.CountOfRooms;
+        public static int CountOfPlayers => PhotonNetwork.CurrentRoom.PlayerCount;
         public static float TotalIncomingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static float TotalOutgoingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing.TotalPacketBytes;
 

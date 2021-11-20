@@ -28,8 +28,7 @@ public class LoadTestConfiguration : ScriptableObject
 
     public float SpawnStep => spawnStep;
     public float SpawnDelay => spawnDelay;
-    public int ObjectsCount { get => objectsCount; set => objectsCount = value; }
-    public bool IsLoopInstantiating { get => isLoopInstantiating; set => isLoopInstantiating = value; }
+    public (int Min, int Max) CountClamp => (minCount, maxCount);
 
     [Header("Prefabs")]
     [SerializeField] private GameObject testObjectPUN1Prefab;
@@ -37,7 +36,8 @@ public class LoadTestConfiguration : ScriptableObject
     [Header("Test values")]
     [SerializeField] private float spawnStep = 1f;
     [SerializeField] private float spawnDelay = 0.5f;
-    [SerializeField] private int objectsCount = 400;
-    [SerializeField] private bool isLoopInstantiating = false;
+    [Header("Test windows values")]
+    [SerializeField] private int minCount = 1;
+    [SerializeField] private int maxCount = 100;
 
 }

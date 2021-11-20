@@ -75,11 +75,13 @@ namespace PunLoadTest.UI
                 PhotonNetwork.networkingPeer.TrafficStatsEnabled = isStatsOn;
 
             if (isStatsWindowOn)
-                statsRect = GUILayout.Window(WindowId, this.statsRect, ExtendedStatsWindow, "Extended PUN stats");
+                statsRect = GUILayout.Window(WindowId, this.statsRect, ExtendedStatsWindow,
+                                                $"Extended PUN stats \n({SystemInfo.deviceName})");
         }
 
         private void ExtendedStatsWindow(int windowID)
         {
+            GUILayout.Space(15f);
             AddCompositeLabel("Time: ", Timer.FormatedTime);
 
             DrawPerformanceGUI();
@@ -93,6 +95,12 @@ namespace PunLoadTest.UI
         {
             if (isShowFps)
                 AddCompositeLabel("FPS: ", fpsCounter.Average.ToString());
+
+            int playersCount = 0;
+            if (PhotonNetworkFacade.InRoom)
+                playersCount = PhotonNetworkFacade.PlayersInRoom;
+
+            AddCompositeLabel("Players: ", playersCount.ToString());
         }
 
         private void DrawBandwidthGUI()
@@ -100,8 +108,8 @@ namespace PunLoadTest.UI
             GUILayout.Box("Bandwidth");
             if (isShowTraffic)
             {
-                AddCompositeLabel("In:\t", trafficCounter.IncomingBandwidth.ToString("0.00"), " kBytes/sec");
-                AddCompositeLabel("Out:\t", trafficCounter.OutgoingBandwidth.ToString("0.00"), " kBytes/sec");
+                AddCompositeLabel("In:\t", trafficCounter.IncomingBandwidth.ToString("0.00"), " kbps");
+                AddCompositeLabel("Out:\t", trafficCounter.OutgoingBandwidth.ToString("0.00"), " kbps");
             }
         }
 

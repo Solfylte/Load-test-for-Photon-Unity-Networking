@@ -12,29 +12,22 @@ namespace PunLoadTest
         private WaitForSeconds spawnTimeout;
         private int objectsCount;
         private bool isLoopInstantiating;
-        private Transform spawnPool;
+        private bool isRPCSync;
+
+        private List<GameObject> testObjects; 
 
         private void Awake()
         {
-            InitializeComponents();
-            CreateSpawnPool();
-        }
-
-        private void InitializeComponents()
-        {
+            testObjects = new List<GameObject>();
             configuration = LoadTestConfiguration.Instance;
             spawnTimeout = new WaitForSeconds(configuration.SpawnDelay);
         }
 
-        private void CreateSpawnPool()
+        public void SpawnObjects(int count, bool isLoopInstantiating, bool isRPCSync)
         {
-            spawnPool = new GameObject("SpawnPool").transform;
-        }
-
-        public void SpawnObjects()
-        {
-            objectsCount = configuration.ObjectsCount;
-            isLoopInstantiating = configuration.IsLoopInstantiating;
+            this.objectsCount = count;
+            this.isLoopInstantiating = isLoopInstantiating;
+            this.isRPCSync = isRPCSync;
 
             StartCoroutine(SpawnObjectsDelayed());
         }
@@ -79,9 +72,9 @@ namespace PunLoadTest
                                                                          0,
                                                                          null);
 
-            testObject.transform.SetParent(spawnPool);
+            testObjects.Add(testObject);
 
-            if(isLoopInstantiating)
+            if (isLoopInstantiating)
             {
                 IMovementController movementController = testObject.GetComponent<IMovementController>();
                 movementController.OnArrivedToDestination += MovementController_OnArrivedToDestination;
@@ -90,8 +83,18 @@ namespace PunLoadTest
 
         private void MovementController_OnArrivedToDestination(PhotonView testObjectPhotonView)
         {
+            testObjects.Remove(testObjectPhotonView.gameObject);
             PhotonNetwork.Destroy(testObjectPhotonView);
             SpawnObject(testObjectPhotonView.transform.position);            
+        }
+
+        public void DestroyAll()
+        {
+            StopAllCoroutines();
+            for (int i = 0; i < testObjects.Count; i++)
+                PhotonNetwork.Destroy(testObjects[i]);
+
+            testObjects.Clear();
         }
     }
 }
