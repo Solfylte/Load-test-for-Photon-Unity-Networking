@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c684e53acd24af646bd2f09fdd553a65, type: 3}
+  m_Name: LoadTestConfiguration
+  m_EditorClassIdentifier: 
+  testObjectPUN1TVSync: {fileID: 2538817844778256693, guid: 92e109bee1a11364f8e27ccf3cbef978, type: 3}
+  testObjectPUN1RPCSync: {fileID: 2538817844778256693, guid: f23b9bc235abf7742a9ba978c91361ff, type: 3}
+  testObjectPUN2TVSync: {fileID: 2538817844778256693, guid: bc0e32a9c3c974a44b1da01a11e7bd52, type: 3}
+  testObjectPUN2RPCSync: {fileID: 2538817844778256693, guid: be04914e2907ede4e89b1d9745dcda48, type: 3}
+  spawnStep: 1.5
+  spawnDelay: 0.1
+  minCount: 1
+  maxCount: 400
