@@ -9,7 +9,7 @@ using System.Text;
 public class LoadTestWindow : EditorWindow
 {
 	private LoadTestConfiguration config;
-	private ILoadTest loadTest;
+	private LoadTest loadTest;
 
 	private int objectsCount = 50;
 	private int testTime = 60;
@@ -47,6 +47,9 @@ public class LoadTestWindow : EditorWindow
 
     private void Update()
 	{
+		if (loadTest == null)
+			loadTest = FindObjectOfType<LoadTest>();
+
 		CheckTestAccessibility();
 		this.Repaint();
 	}
@@ -65,7 +68,7 @@ public class LoadTestWindow : EditorWindow
     private void CheckTestAccessibility()
     {
 		isTestCanBeRun = PhotonNetworkFacade.InRoom && Application.isPlaying;
-		isTestCanBeInterrupted = Application.isPlaying && loadTest != null && loadTest.IsRun;
+		isTestCanBeInterrupted = Application.isPlaying && loadTest!=null && loadTest.IsRun;
 	}
 
     private void DrawButtons()
@@ -101,13 +104,11 @@ public class LoadTestWindow : EditorWindow
     private void Run()
     {
 		reportText.Clear();
-		loadTest = LoadTest.Instance;
-		LoadTest.Instance.Run(testTime, objectsCount, isLoopInstantiating, isRPCSync);
+		loadTest.Run(testTime, objectsCount, isLoopInstantiating, isRPCSync);
 	}
 
 	private void Interrupt()
 	{
-		loadTest = LoadTest.Instance;
 		loadTest.Interrupt();
 	}
 
@@ -136,7 +137,10 @@ public class LoadTestWindow : EditorWindow
 			EditorGUILayout.HelpBox("Sync via RPC - position synchronization by sending RPC, instead of normal way.", MessageType.Info);
 
 		if(!isTestCanBeRun)
-			EditorGUILayout.HelpBox("For test start, application should be in playing mode and connected to room.", MessageType.Warning);
+			EditorGUILayout.HelpBox("For test start, application should be in playing mode and connected to room.", MessageType.Warning);		
+		
+		if(loadTest==null)
+			EditorGUILayout.HelpBox("LoadTest component must be preadded on scene", MessageType.Error);
 	}
 
 	private void DrawReports()
@@ -148,6 +152,9 @@ public class LoadTestWindow : EditorWindow
 
 		if (loadTest == null || loadTest.Reports.Count == 0)
 			return;
+
+		if (selectedReportIndex >= loadTest.Reports.Count)
+			selectedReportIndex = 0;
 
 		selectedReportIndex = EditorGUILayout.Popup(selectedReportIndex, GetDevicesNames());
 

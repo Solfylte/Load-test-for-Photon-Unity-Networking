@@ -25,26 +25,6 @@ namespace PunLoadTest
         private int startTotalIncomingBytes;
         private int startTotalOutdoingBytes;
 
-        private static ILoadTest instance;
-        public static ILoadTest Instance
-        {
-            get 
-            {
-                if (instance == null)
-                {
-                    GameObject loadTestGO = PhotonNetwork.InstantiateSceneObject(PrefabName,
-                                                                                 Vector3.zero,
-                                                                                 Quaternion.identity,
-                                                                                 0,
-                                                                                 null);
-
-                    instance = loadTestGO.GetComponent<ILoadTest>();
-                }
-
-                return instance;
-            }
-        }
-
         private void Awake()
         {
             configuration = LoadTestConfiguration.Instance;
@@ -58,13 +38,8 @@ namespace PunLoadTest
         {
             if (PhotonNetworkFacade.IsMasterClient)
             {
-                Interrupt();
-                StartCoroutine(DelayedEnd(testTime));
-                IsRun = true;
-                spawner.SpawnObjects(count, isLoopInstantiating, isRPCSync);
-
-                startTotalIncomingBytes = PhotonNetworkFacade.TotalIncomingBytes;
-                startTotalOutdoingBytes = PhotonNetworkFacade.TotalOutgoingBytes;
+                PhotonNetworkFacade.RPC(photonView, nameof(InternalRun), PunLoadTest.RpcTarget.All,
+                        testTime, count, isLoopInstantiating, isRPCSync);
             }
             else
             {
@@ -74,24 +49,43 @@ namespace PunLoadTest
         }
 
         [PunRPC]
+        private void InternalRun(float testTime, int count, bool isLoopInstantiating, bool isRPCSync)
+        {
+            reports.Clear();
+            InternalInterrupt();
+            StartCoroutine(DelayedEnd(testTime));
+            IsRun = true;
+
+            startTotalIncomingBytes = PhotonNetworkFacade.TotalIncomingBytes;
+            startTotalOutdoingBytes = PhotonNetworkFacade.TotalOutgoingBytes;
+
+            if (PhotonNetworkFacade.IsMasterClient)
+                spawner.SpawnObjects(count, isLoopInstantiating, isRPCSync);
+        }
+
+        [PunRPC]
         public void Interrupt()
         {
             if (PhotonNetworkFacade.IsMasterClient)
-            {
-                StopAllCoroutines();
-                IsRun = false;
-                spawner.DestroyAll();
-            }
+                PhotonNetworkFacade.RPC(photonView, nameof(InternalInterrupt), PunLoadTest.RpcTarget.All);
             else
-            {
                 PhotonNetworkFacade.RPC(photonView, nameof(Interrupt), PunLoadTest.RpcTarget.MasterClient);
-            }
+        }
+
+        [PunRPC]
+        private void InternalInterrupt()
+        {
+            StopAllCoroutines();
+            IsRun = false;
+
+            if (PhotonNetworkFacade.IsMasterClient)
+                spawner.DestroyAll();
         }
 
         private IEnumerator DelayedEnd(float testTime)
         {
             yield return new WaitForSeconds(testTime);
-            Interrupt();
+            InternalInterrupt();
 
             CreateReport();
         }
