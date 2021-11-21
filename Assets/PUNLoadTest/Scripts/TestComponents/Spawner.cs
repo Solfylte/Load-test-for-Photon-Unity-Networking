@@ -66,7 +66,9 @@ namespace PunLoadTest
 
         public void SpawnObject(Vector3 position)
         {
-            GameObject testObject = PhotonNetwork.InstantiateSceneObject(configuration.TestObjectName,
+            string prefabName = isRPCSync ? configuration.TestObjectRPCSyncName : configuration.TestObjectTVsyncName;
+
+            GameObject testObject = PhotonNetwork.InstantiateSceneObject(prefabName,
                                                                          position,
                                                                          Quaternion.identity,
                                                                          0,

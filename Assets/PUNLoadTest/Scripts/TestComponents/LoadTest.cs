@@ -22,6 +22,9 @@ namespace PunLoadTest
 
         private IFpsCounter fpsCounter;
 
+        private int startTotalIncomingBytes;
+        private int startTotalOutdoingBytes;
+
         private static ILoadTest instance;
         public static ILoadTest Instance
         {
@@ -59,6 +62,9 @@ namespace PunLoadTest
                 StartCoroutine(DelayedEnd(testTime));
                 IsRun = true;
                 spawner.SpawnObjects(count, isLoopInstantiating, isRPCSync);
+
+                startTotalIncomingBytes = PhotonNetworkFacade.TotalIncomingBytes;
+                startTotalOutdoingBytes = PhotonNetworkFacade.TotalOutgoingBytes;
             }
             else
             {
@@ -93,8 +99,8 @@ namespace PunLoadTest
         private void CreateReport()
         {
             ReportInfo report = new ReportInfo(fpsCounter.TotalAverage,
-                                                PhotonNetworkFacade.TotalIncomingBytes,
-                                                PhotonNetworkFacade.TotalOutgoingBytes);
+                                                PhotonNetworkFacade.TotalIncomingBytes - startTotalIncomingBytes,
+                                                PhotonNetworkFacade.TotalOutgoingBytes - startTotalOutdoingBytes);
 
             PhotonNetworkFacade.RPC(photonView, nameof(ReceiveReport), RpcTarget.All, report.PackToString());
         }

@@ -21,9 +21,11 @@ public class LoadTestConfiguration : ScriptableObject
     #endregion
 
 #if IS_PUN1
-    public string TestObjectName => testObjectPUN1Prefab.name;
+    public string TestObjectTVsyncName => testObjectPUN1TVSync.name;
+    public string TestObjectRPCSyncName => testObjectPUN1RPCSync.name;
 #elif IS_PUN2
-    public string TestObjectName => testObjectPUN2Prefab.name;
+    public string TestObjectTVsyncName => testObjectPUN2TVSync.name;
+    public string TestObjectRPCSyncName => testObjectPUN2RPCSync.name;
 #endif
 
     public float SpawnStep => spawnStep;
@@ -31,8 +33,10 @@ public class LoadTestConfiguration : ScriptableObject
     public (int Min, int Max) CountClamp => (minCount, maxCount);
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject testObjectPUN1Prefab;
-    [SerializeField] private GameObject testObjectPUN2Prefab;
+    [SerializeField] private GameObject testObjectPUN1TVSync;
+    [SerializeField] private GameObject testObjectPUN1RPCSync;   
+    [SerializeField] private GameObject testObjectPUN2TVSync;
+    [SerializeField] private GameObject testObjectPUN2RPCSync;
     [Header("Test values")]
     [SerializeField] private float spawnStep = 1f;
     [SerializeField] private float spawnDelay = 0.5f;
