@@ -28,8 +28,8 @@ namespace PunLoadTest
         public static int TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
         public static bool TrafficStatsEnabled
         {
-            get => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TrafficStatsEnabled;
-            set => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TrafficStatsEnabled = value;
+            get => PhotonNetwork.networkingPeer.TrafficStatsEnabled;
+            set => PhotonNetwork.networkingPeer.TrafficStatsEnabled = value;
         }
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings("1.0.0");
         public static void RPC(PhotonView photonView,
