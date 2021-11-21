@@ -23,9 +23,9 @@ namespace PunLoadTest
         public static bool IsMasterClient => PhotonNetwork.isMasterClient;
         public static int CountOfRooms => PhotonNetwork.countOfRooms;
         public static int PlayersInRoom => PhotonNetwork.room.PlayerCount;
-        public static float TotalIncomingBytes => PhotonNetwork.networkingPeer.TrafficStatsIncoming.TotalPacketBytes;
-        public static float TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
-
+        public static PhotonPlayer LocalPlayer => PhotonNetwork.player;        
+        public static int TotalIncomingBytes => PhotonNetwork.networkingPeer.TrafficStatsIncoming.TotalPacketBytes;
+        public static int TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings("1.0.0");
         public static void RPC(PhotonView photonView,
                                string methodName,
@@ -40,9 +40,10 @@ namespace PunLoadTest
         public static bool InRoom => PhotonNetwork.InRoom;
         public static bool IsMasterClient => PhotonNetwork.IsMasterClient;
         public static int CountOfRooms => PhotonNetwork.CountOfRooms;
-        public static int CountOfPlayers => PhotonNetwork.CurrentRoom.PlayerCount;
-        public static float TotalIncomingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.TotalPacketBytes;
-        public static float TotalOutgoingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing.TotalPacketBytes;
+        public static int PlayersInRoom => PhotonNetwork.Room.PlayerCount;
+        public static PhotonPlayer LocalPlayer => PhotonNetwork.LocalPlayer;   
+        public static int TotalIncomingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.TotalPacketBytes;
+        public static int TotalOutgoingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing.TotalPacketBytes;
 
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings();
         public static void RPC(PhotonView photonView,

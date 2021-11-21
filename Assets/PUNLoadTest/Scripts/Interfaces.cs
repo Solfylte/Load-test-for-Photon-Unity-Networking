@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PunLoadTest
@@ -11,6 +12,7 @@ namespace PunLoadTest
     public interface ILoadTest
     {
         bool IsRun { get; }
+        IReadOnlyList<ReportInfo> Reports { get; }
         void Run(float testTime, int count, bool isLoopInstantiating, bool isRPCSync);
         void Interrupt();
     }
@@ -30,7 +32,15 @@ namespace PunLoadTest
     {
         public interface IFpsCounter
         {
+            /// <summary>
+            /// Average FPS per 1 second sample
+            /// </summary>
             int Average { get; }
+
+            /// <summary>
+            /// Average FPS since start of measurements
+            /// </summary>
+            int TotalAverage { get; }
         }
 
         public interface ITrafficCounter

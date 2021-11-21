@@ -8,8 +8,10 @@ namespace PunLoadTest.UI
         private float sampleTime;
         private int frameCount;
         private int averageFps;
+        private int totalAverageFps;
 
         public int Average => averageFps;
+        public int TotalAverage => totalAverageFps;
 
         private void Update()
         {
@@ -18,6 +20,7 @@ namespace PunLoadTest.UI
             {
                 sampleTime = Time.unscaledTime + 1f;
                 averageFps = frameCount;
+                totalAverageFps = (totalAverageFps + averageFps) / 2;
                 frameCount = 0;
             }
         }

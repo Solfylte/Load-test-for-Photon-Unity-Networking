@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7743469794357683920}
   - component: {fileID: 7743469794357683923}
   - component: {fileID: 7743469794357683921}
+  - component: {fileID: -5915900648874064728}
   m_Layer: 0
   m_Name: PunLoadTest
   m_TagString: Untagged
@@ -82,5 +83,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10425b569ea87b440beff7bf7faadef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-5915900648874064728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7743469794357683933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb8bdb369be631e4790151e2745cdbcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

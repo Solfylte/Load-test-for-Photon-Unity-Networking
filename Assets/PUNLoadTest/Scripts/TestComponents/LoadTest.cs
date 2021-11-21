@@ -1,19 +1,26 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using PunLoadTest.UI;
+using System.Collections.Generic;
 
 namespace PunLoadTest
 {
     [RequireComponent(typeof(PhotonView))]
     public class LoadTest : MonoBehaviour, ILoadTest
     {
+        public bool IsRun { get; private set; }
+
+        public IReadOnlyList<ReportInfo> Reports => reports;
+        public List<ReportInfo> reports = new List<ReportInfo>();
+
         private const string PrefabName = "PunLoadTest";
 
         private LoadTestConfiguration configuration;
         private PhotonView photonView;
         private ISpawner spawner;
 
-        public bool IsRun { get; private set; }
+        private IFpsCounter fpsCounter;
 
         private static ILoadTest instance;
         public static ILoadTest Instance
@@ -40,6 +47,7 @@ namespace PunLoadTest
             configuration = LoadTestConfiguration.Instance;
             photonView = GetComponent<PhotonView>();
             spawner = GetComponent<ISpawner>();
+            fpsCounter = GetComponent<IFpsCounter>();
         }
 
         [PunRPC]
@@ -78,6 +86,30 @@ namespace PunLoadTest
         {
             yield return new WaitForSeconds(testTime);
             Interrupt();
+
+            CreateReport();
+        }
+        
+        private void CreateReport()
+        {
+            ReportInfo report = new ReportInfo(fpsCounter.TotalAverage,
+                                                PhotonNetworkFacade.TotalIncomingBytes,
+                                                PhotonNetworkFacade.TotalOutgoingBytes);
+
+            PhotonNetworkFacade.RPC(photonView, nameof(ReceiveReport), RpcTarget.All, report.PackToString());
+        }
+
+        [PunRPC]
+        public void ReceiveReport(string receivedString)
+        {
+            ReportInfo report = new ReportInfo(receivedString);
+            reports.Add(report);
+
+            Debug.Log($">> Received report: device: {report.DeviceName}" +
+                                           $" IsMaster={report.IsMasterClient}" +
+                                           $" FPS={report.Fps}" +
+                                           $" TotalIncomingBytes = {report.InBytesDelta}" +
+                                           $" TotalOutgoingBytes = {report.OutBytesDelta}");
         }
     }
 }

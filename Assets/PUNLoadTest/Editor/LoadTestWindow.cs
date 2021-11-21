@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using PunLoadTest;
+using System.Text;
 
 public class LoadTestWindow : EditorWindow
 {
@@ -15,10 +16,15 @@ public class LoadTestWindow : EditorWindow
 	private bool isLoopInstantiating = false;
 	private bool isRPCSync = false;
 
-	private Color background;
-
 	private bool isTestCanBeRun;
 	private bool isTestCanBeInterrupted;
+	private int selectedReportIndex;
+	private StringBuilder reportText = new StringBuilder();
+
+	private Color background;
+	private Texture2D runIcon;
+	private Texture2D interruptIcon;
+	private Texture2D copyIcon;
 
 	[MenuItem("Tools/Testing/PUN load test", false, 20)]
 	internal static void OpenLoadTestWindow()
@@ -27,20 +33,33 @@ public class LoadTestWindow : EditorWindow
 		window.Show();
 	}
 
+    private void Awake()
+    {
+		runIcon = Resources.Load("Editor/runIcon", typeof(Texture2D)) as Texture2D;
+		interruptIcon = Resources.Load("Editor/interruptIcon", typeof(Texture2D)) as Texture2D;
+		copyIcon = Resources.Load("Editor/copyIcon", typeof(Texture2D)) as Texture2D;		
+	}
+
     private void OnEnable()
     {
 		config = LoadTestConfiguration.Instance;
 	}
 
-    void OnGUI()
+    private void Update()
+	{
+		CheckTestAccessibility();
+		this.Repaint();
+	}
+
+    private void OnGUI()
     {
 		background = GUI.backgroundColor;
-
-		CheckTestAccessibility();
 
 		DrawButtons();
 		DrawConfiguration();
 		DrawInfoMessage();
+
+		DrawReports();
 	}
 
     private void CheckTestAccessibility()
@@ -53,19 +72,24 @@ public class LoadTestWindow : EditorWindow
     {
 		GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
 
-		GUI.color = Color.cyan;
+		GUI.color = background;
+		if (isTestCanBeRun)
+			GUI.color = Color.cyan;
 
 		EditorGUI.BeginDisabledGroup(!isTestCanBeRun);
-		if (GUILayout.Button("RUN", GUILayout.Width(150f), GUILayout.Height(50f)))
+		if (GUILayout.Button(runIcon, GUILayout.Width(150f), GUILayout.Height(50f)))
 			Run();
 		EditorGUI.EndDisabledGroup();
 
 		GUILayout.Space(5f);
 
-		GUI.color = new Color(0.75f,0.2f,0.2f);
+		GUI.color = background;
+
+		if (isTestCanBeInterrupted)
+			GUI.color = new Color(0.75f,0.2f,0.2f);
 
 		EditorGUI.BeginDisabledGroup(!isTestCanBeInterrupted);
-		if (GUILayout.Button("INTERRUPT", GUILayout.Width(150f), GUILayout.Height(50f)))
+		if (GUILayout.Button(interruptIcon, GUILayout.Width(150f), GUILayout.Height(50f)))
 			Interrupt();
 		EditorGUI.EndDisabledGroup();
 
@@ -76,6 +100,7 @@ public class LoadTestWindow : EditorWindow
 
     private void Run()
     {
+		reportText.Clear();
 		loadTest = LoadTest.Instance;
 		LoadTest.Instance.Run(testTime, objectsCount, isLoopInstantiating, isRPCSync);
 	}
@@ -112,5 +137,53 @@ public class LoadTestWindow : EditorWindow
 
 		if(!isTestCanBeRun)
 			EditorGUILayout.HelpBox("For test start, application should be in playing mode and connected to room.", MessageType.Warning);
+	}
+
+	private void DrawReports()
+	{
+		EditorGUILayout.Space(10f);
+		GUI.color = Color.cyan;
+		EditorGUILayout.HelpBox("Reports", MessageType.None);
+		GUI.color = background;
+
+		if (loadTest == null || loadTest.Reports.Count == 0)
+			return;
+
+		selectedReportIndex = EditorGUILayout.Popup(selectedReportIndex, GetDevicesNames());
+
+		ReportInfo report = loadTest.Reports[selectedReportIndex];
+		UpdateReportText(report);
+
+		GUILayout.Space(5f);
+		EditorGUILayout.BeginHorizontal(GUI.skin.textArea);
+		EditorGUILayout.LabelField(reportText.ToString(), GUILayout.Height(120f));
+		if (GUILayout.Button(copyIcon, GUILayout.Width(36f), GUILayout.Height(36f)))
+			CopySelectedReport();
+		EditorGUILayout.EndHorizontal();
+	}
+
+    private void UpdateReportText(ReportInfo report)
+    {
+		reportText.Clear();
+		reportText.AppendLine($"Device:\t{selectedReportIndex+1}. {report.DeviceName}");
+		reportText.AppendLine($"Is Master:\t{report.IsMasterClient}");
+		reportText.AppendLine($"Average FPS:\t{report.Fps}");
+		reportText.AppendLine($"Total In bytes:\t{report.InBytesDelta}");
+		reportText.AppendLine($"Total Out bytes:\t{report.OutBytesDelta}");
+	}
+
+    private string[] GetDevicesNames()
+    {
+		string[] devices = new string[loadTest.Reports.Count];
+
+		for (int i = 0; i < loadTest.Reports.Count; i++)
+			devices[i] = $"{i+1}. {loadTest.Reports[i].DeviceName}";
+
+		return devices;
+	}
+
+	private void CopySelectedReport()
+	{
+		EditorGUIUtility.systemCopyBuffer = reportText.ToString();
 	}
 }
