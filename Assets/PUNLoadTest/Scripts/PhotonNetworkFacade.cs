@@ -26,6 +26,11 @@ namespace PunLoadTest
         public static PhotonPlayer LocalPlayer => PhotonNetwork.player;        
         public static int TotalIncomingBytes => PhotonNetwork.networkingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static int TotalOutgoingBytes => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TotalPacketBytes;
+        public static bool TrafficStatsEnabled
+        {
+            get => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TrafficStatsEnabled;
+            set => PhotonNetwork.networkingPeer.TrafficStatsOutgoing.TrafficStatsEnabled = value;
+        }
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings("1.0.0");
         public static void RPC(PhotonView photonView,
                                string methodName,
@@ -40,16 +45,21 @@ namespace PunLoadTest
         public static bool InRoom => PhotonNetwork.InRoom;
         public static bool IsMasterClient => PhotonNetwork.IsMasterClient;
         public static int CountOfRooms => PhotonNetwork.CountOfRooms;
-        public static int PlayersInRoom => PhotonNetwork.Room.PlayerCount;
-        public static PhotonPlayer LocalPlayer => PhotonNetwork.LocalPlayer;   
+        public static int PlayersInRoom => PhotonNetwork.CurrentRoom.PlayerCount;
+        public static Player LocalPlayer => PhotonNetwork.LocalPlayer;   
         public static int TotalIncomingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsIncoming.TotalPacketBytes;
         public static int TotalOutgoingBytes => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsOutgoing.TotalPacketBytes;
+        public static bool TrafficStatsEnabled
+        {
+            get => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsEnabled;
+            set => PhotonNetwork.NetworkingClient.LoadBalancingPeer.TrafficStatsEnabled = value;
+        }
 
         public static void ConnectUsingSettings() => PhotonNetwork.ConnectUsingSettings();
         public static void RPC(PhotonView photonView,
                                string methodName,
                                PunLoadTest.RpcTarget targets,
-                               object[] param) => photonView.RPC(methodName, (Photon.Pun.RpcTarget)targets, param);
+                               params object[] param) => photonView.RPC(methodName, (Photon.Pun.RpcTarget)targets, param);
 #endif
     }
 

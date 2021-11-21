@@ -2,6 +2,10 @@ using ExitGames.Client.Photon;
 using System;
 using UnityEngine;
 using UnityEngine.Profiling;
+#if IS_PUN2
+using Photon.Pun.UtilityScripts;
+using Photon.Pun;
+#endif
 
 namespace PunLoadTest.UI
 {
@@ -71,8 +75,8 @@ namespace PunLoadTest.UI
 
         private void OnGUI()
         {
-            if (PhotonNetwork.networkingPeer.TrafficStatsEnabled != isStatsOn)
-                PhotonNetwork.networkingPeer.TrafficStatsEnabled = isStatsOn;
+            if (PhotonNetworkFacade.TrafficStatsEnabled != isStatsOn)
+                PhotonNetworkFacade.TrafficStatsEnabled = isStatsOn;
 
             if (isStatsWindowOn)
                 statsRect = GUILayout.Window(WindowId, this.statsRect, ExtendedStatsWindow,

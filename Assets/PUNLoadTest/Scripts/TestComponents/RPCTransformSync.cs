@@ -11,7 +11,11 @@ namespace PunLoadTest
     /// <summary>
     /// Position synchronization via RPC. Just for check RPC traffic
     /// </summary>
+#if IS_PUN1
     public class RPCTransformSync : Photon.MonoBehaviour
+#else
+    public class RPCTransformSync : Photon.Pun.MonoBehaviourPun
+#endif
     {
         [SerializeField] private float lerpSpeed = 6f;
 

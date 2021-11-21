@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine;
 using PunLoadTest.UI;
 using System.Collections.Generic;
+#if IS_PUN2
+using Photon.Pun;
+#endif
 
 namespace PunLoadTest
 {

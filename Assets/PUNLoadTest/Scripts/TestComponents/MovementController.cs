@@ -1,5 +1,8 @@
 using System;
 using UnityEngine;
+#if IS_PUN2
+using Photon.Pun;
+#endif
 
 namespace PunLoadTest
 {
