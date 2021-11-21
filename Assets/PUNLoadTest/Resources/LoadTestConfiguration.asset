@@ -19,4 +19,4 @@ MonoBehaviour:
   spawnStep: 1.5
   spawnDelay: 0.1
   minCount: 1
-  maxCount: 100
+  maxCount: 400
